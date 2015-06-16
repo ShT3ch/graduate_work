@@ -4,3 +4,6 @@
 *.log
 *.synctex
 *.toc
+
+*.tex.bak
+*.tex.sav
