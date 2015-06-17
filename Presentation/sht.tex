@@ -41,12 +41,13 @@
 \beamertemplatetransparentcovered
 
 \title
-      {{Вывод и решение уравнений с учетом случайных возмущений.}}
- \author{Студентка группы МК-410202 \\
- Сайфуллина Айгуль Ильгамовна \newline
+      {{Применение нейронных сетей для калибровки оборудования на примере двух задач робототехники.}}
+ \author{Студент группы МК-410502 \\
+ Штех Геннадий Петрович \newline
  \newline
-Научный руководитель: профессор, доктор физико-математических наук \\
-Мельникова Ирина Валерьяновна \\}
+Научный руководитель: \\
+кандидат физико-математических наук \\
+Окуловский Юрий Сергеевич \\}
  \institute{Уральский федеральный университет}
  %\subject{Theoretical Computer Science}
  \date{Екатеринбург,~2015}
@@ -75,212 +76,44 @@
 
 
 
+
+
 \begin{frame}
-
-{\textbf{Часть 0}} описание принятой модели \newline
-
-{\textbf{Часть 1}} вывод уравнения вероятностных характеристик \newline
-
-{\textbf{Часть 2}} вывод и решение стохастического уравнения \newline
-
-{\textbf{Часть 3}} связь между уравнениями для вероятностных характеристик и стохастическими уравнениями
-
+    Предметная область
+    
+    Простой путь $\leftrightarrow$ здравый смысл
+    
+    Управление $\ldots$
+    
+    Обощенный сенсорный $\ldots$
+    
+    К реализации и $\ldots$ чем управлять?
 \end{frame}
 
 \begin{frame}
-    \frametitle{Рассмотрим систему, которая может находиться в двух состояниях в каждый момент времени $t$.}
+Что такое двигатель?
 
-    \begin{tikzpicture}[node distance=3cm, overlay]
+Итерация, $\ldots$ погрешность.
 
-        \node at (current page.west) (s_1) [rect,xshift=24mm, yshift = -51mm ] {$S_1(t)$};
-        \node (s_2) [rect, right of=s_1, xshift=3cm] {$S_2(t)$};
+Циклы регуляции.
 
+$\ldots$
 
+Функция-регулятор.
 
-        %\path[every node/.style={sloped,anchor=south,auto=false}, line width=2pt]
-        %    (s_1) edge [loop above] node {$(\lambda,0)$} (s_1)
-        %    (s_1) edge [<->, bend right] node {an} (s_2);
-        %\draw[->, ultra thick] (s_1.south) -- ([yshift = -25mm]s_1.south);
+Где здравый смысл? В общем характеристика.
 
-        \only<2-2>{
-                \node (1Node) [mnode, right of=s_1, xshift=-40mm, yshift = 14mm] {\small1};
-                \node (2Node) [mnode, left of=s_2, xshift=40mm, yshift = 14mm] {\small2};
-
-                \path[every node/.style={sloped,anchor=south,auto=false}, line width=2pt]
-                    (s_1) edge [->, loop above] node {$[0,0]$} (s_1)
-                    (s_2) edge [->, loop above] node {$[0,0]$} (s_2);
-        }
-
-        \only<3-3>{
-                \node (3Node) [mnode, below left of=s_1,xshift=25mm] {\small3};
-                \node (4Node) [mnode, below right of=s_1, xshift=-25mm] {\small4};
-
-                \node (5Node) [mnode, below left of=s_2,xshift=25mm] {\small5};
-                \node (6Node) [mnode, below right of=s_2, xshift=-25mm] {\small6};
-
-                \path[every node/.style={sloped,anchor=south,auto=false}, line width=2pt]
-                    (s_1) edge [->] node {$[-\lambda_1,]$} (3Node)
-                    (s_1) edge [<-] node {$[\lambda_1,0]$} (4Node)
-                    (s_2) edge [->] node {$[0,-\lambda_2]$} (5Node)
-                    (s_2) edge [<-] node {$[0,\lambda_2]$} (6Node);
-        }
-
-        \only<4-4>{
-                \node (7Node) [mnode, right of=s_1, xshift=-20mm, yshift = 15mm] {\small7};
-                \node (8Node) [mnode, right of=s_1, xshift=-20mm, yshift = -15mm] {\small8};
-
-                \path[every node/.style={sloped,anchor=south,auto=false}, line width=2pt]
-                    ([yshift=4mm]s_1.east) edge [->] node {$[-\lambda_1,\lambda_2]$} ([yshift=4mm]s_2.west)
-                    ([yshift=-8mm]s_1.east) edge [<-] node {$[\lambda_1,-\lambda_2]$} ([yshift=-8mm]s_2.west);
-        }
-
-        \only<5-5>{
-                \node (10Node) [mnode, right of=s_1, xshift=-20mm, yshift = 31mm, label={[label distance=1cm]-90:$[\lambda_1,\lambda_2]$}] {\footnotesize10};
-                \node (9Node) [mnode, right of=s_1, xshift=-20mm, yshift = -31mm, label={[label distance=1cm]90:$[-\lambda_1,-\lambda_2]$}] {\small9};
-
-                \path[every node/.style={sloped,anchor=south,auto=false}, line width=2pt]
-                    (s_1) edge [<-] node {} (10Node)
-                    (s_2) edge [<-] node {} (10Node)
-                    (s_1) edge [->] node {} (9Node)
-                    (s_2) edge [->] node {} (9Node);
-        }
-    \end{tikzpicture}
-\end{frame}
-
-\begin{frame}
-Уравнение для вероятностных характеристик:
-    \[
-      \alert<1>{\frac{\partial p(t, x_1, x_2)}{\partial t}} = - \sum_{i=1}^2 \frac{\partial}{\partial x_i} [\mu_i(t, x_1, x_2)p(t, x_1, x_2)] +
-      \]
-     \[
-      + \frac{1}{2} \sum_{i=1}^2 \sum_{j=1}^2 \frac{\partial^2}{\partial x_i \partial x_j}\left[ \sum_{i=1}^2 b_{ij}(t, x_1, x_2)b_{ji}(t, x_1, x_2)p(t, x_1, x_2)\right]
-    \]
 \end{frame}
 
 
 
 \begin{frame}
 
-            \[\alert<2>{p(t, x_1, x_2)}+\alert<3>{\Delta t \sum_{n=1}^{10} T_i} = \alert<1>{p(t + \Delta t, x_1, x_2)}\]
+Что получилось?
+
+Результаты.
 
 \end{frame}
 
-\begin{frame}
-  Общая структура $T_i$
-  \newline
-    \setbeamercolor{itemize item}{fg=white}
-    \begin{itemize}
-        \item<1-3> {
-            \(T_1(t, x_1, x_2) + T_2(t, x_1, x_2) = \alert<2>{p(t, x_1, x_2)}\alert<3>{(1 - d_1 (t, x_1, x_2) - b_1 (t, x_1, x_2) - d_2 (t, x_1, x_2) - b_2 (t, x_1, x_2)- m_{12}(t, x_1, x_2) - m_{21}(t, x_1, x_2) - m_{22}(t, x_1, x_2) - m_{11}(t, x_1, x_2))}\)
-        }
-        \item<4-6> {
-            $T_3(t, x_1 + \lambda_1, x_2) = \alert<5>{p(t, x_1 + \lambda_1, x_2)}\alert<6>{d_1 (t, x_1 + \lambda_1, x_2)}$
-        }
-    \end{itemize}
-\end{frame}
-
-\begin{frame}
-    Разложение в ряд Тейлора слагаемых $T_i$
-    \newline
-    \setbeamercolor{itemize item}{fg=white}
-    \begin{itemize}
-        \item<1-1> $$T_3 \approx pd_1 + \frac{\partial(pd_1)}{\partial x_1} \lambda_1 + \frac{1}{2}\frac{\partial^2(pd_1)}{\partial x_1^2} \lambda_1^2$$
-        \item<2-2> {$$T_7 \approx pm_{12} + \frac{\partial(pm_{12})}{\partial x_1} \lambda_1 - \frac{\partial(pm_{12})}{\partial x_2} \lambda_2 +$$$$+ \frac{1}{2} \sum_{i=1}^2 \sum_{j=1}^2 (-1)^{i+j}\frac{\partial^2(pm_{12})}{\partial x_1 \partial x_2} \lambda_i \lambda_j$$}
-    \end{itemize}
-\end{frame}
-
-\begin{frame}
-
-    \Wider[4em]
-    {\small
-        $$\alert<2>{p(t + \Delta t, x_1, x_2) - p(t, x_1, x_2)} = p(1 - d_1 - b_1 - d_2 - b_2 - m_{12} - m_{21} - m_{22} - m_{11}) +$$ $$ + p\left(d_1 + b_1 + b_2 + d_2 + m_{12} + m_{21} + m_{11} + m_{22}\right) + $$ $$+ \left(\frac{\partial(pd_1)}{\partial x_1} - \frac{\partial(pb_1)}{\partial x_1} + \frac{\partial(pm_{12})}{\partial x_1} - \frac{\partial(pm_{21})}{\partial x_1} + \frac{\partial(pm_{11})}{\partial x_1} - \frac{\partial(pm_{22})}{\partial x_1}\right) \lambda_1 + $$ $$- \left(\frac{\partial(pb_2)}{\partial x_2} - \frac{\partial(pd_2)}{\partial x_2} - \frac{\partial(pm_{12})}{\partial x_2} + \frac{\partial(pm_{21})}{\partial x_2}  + \frac{\partial(pm_{11})}{\partial x_2}  - \frac{\partial(pm_{22})}{\partial x_2}\right) \lambda_2 + $$ $$ + \frac{1}{2}\left(\frac{\partial^2(pd_1)}{\partial x_1^2} \lambda_1^2 + \frac{\partial^2(pb_1)}{\partial x_1^2} \lambda_1^2 + \frac{\partial^2(pb_2)}{\partial x_2^2} \lambda_2^2 + \frac{\partial^2(pd_2)}{\partial x_2^2} \lambda_2^2 \right) +$$ $$+ \frac{1}{2}\left(\sum_{i=1}^2 \sum_{j=1}^2  (-1)^{i+j}\frac{\partial^2(pm_{12})}{\partial x_1 \partial x_2}  + \frac{\partial^2(pm_{21})}{\partial x_1 \partial x_2} + \frac{\partial^2(pm_{11})}{\partial x_1 \partial x_2}  + \frac{\partial^2(pm_{22})}{\partial x_1 \partial x_2} \right) \lambda_i \lambda_j$$
-    }
-\end{frame}
-
-\begin{frame}
-    \begin{table}
-    \begin{center}
-    \begin{tabular}{|c|c|}
-    \hline
-    \textbf{Изменение значений состояний} & \textbf{Вероятность}\\
-    \hline
-    $\Delta S^1 = [- \lambda_1, 0]^T$ &  $p_1=d_1 (t, S_1, S_2) \Delta t$ \\
-    $\Delta S^2 = [ \lambda_1, 0]^T$ &  $p_2=b_1 (t, S_1, S_2) \Delta t$ \\
-    $\Delta S^3 = [ 0, - \lambda_2]^T$ &  $p_3=d_2 (t, S_1, S_2) \Delta t$ \\
-    $\Delta S^4 = [ 0, \lambda_2]^T$ &  $p_4=b_2 (t, S_1, S_2) \Delta t$ \\
-    $\Delta S^5 = [- \lambda_1, \lambda_2]^T$ &  $p_5=m_{12} (t, S_1, S_2) \Delta t$ \\
-    $\Delta S^6 = [ \lambda_1,- \lambda_2]^T$ &  $p_6=m_{21} (t, S_1, S_2) \Delta t$ \\
-    $\Delta S^7 = [- \lambda_1,- \lambda_2]^T$ &  $p_7=m_{11} (t, S_1, S_2) \Delta t$ \\
-    $\Delta S^8 = [ \lambda_1, \lambda_2]^T$ &  $p_8=m_{22} (t, S_1, S_2) \Delta t$ \\
-    $\Delta S^9 = [0, 0]^T$ &  $p_9= 1 - \sum_{n=1}^8 p_i \Delta t$ \\
-    \hline
-
-    \end{tabular}
-    \end{center}
-    \end{table}
-\end{frame}
-
-\begin{frame}
-Математическое ожидание  $\mathbb{E}(\Delta S)$:
-
-\[
-    \mathbb{E}(\Delta S) = \sum_{i=1}^9 p_i \Delta S^i =
-        \begin{bmatrix}
-            (-d_1+ b_1 - m_{12} + m_{21} + m_{22} - m_{11}) \lambda_1 \\
-            (-d_2+ b_2 + m_{12} - m_{21} + m_{22} - m_{11}) \lambda_2 \\
-        \end{bmatrix}\Delta t
-\]
-
-
-\small
-    Ковариационная матрица:
-    \[
-        \mathbb{E}(\Delta S (\Delta S)^T) = \sum_{i=1}^9 p_j (\Delta S^j \Delta S^j)^T =
-        \]\[\begin{bmatrix}
-            (d_1+ b_1 + m_\alpha)\lambda_1^2 & (- m_{12} - m_{21} + m_{22} + m_{11}) \lambda_1 \lambda_1 \\
-            (- m_{12} - m_{21} + m_{22} + m_{11}) \lambda_1 \lambda_1 &  (d_2+ b_2 + m_\alpha)\lambda_2^2 \\
-        \end{bmatrix}
-        \Delta t
-    \]
-\newline
-где \[m_\alpha = m_{12} + m_{21} + m_{22} + m_{11}\]
-
-\end{frame}
-
-\begin{frame}
-Уравнение для вероятностных характеристик:
-    \[
-      \frac{\partial p(t, x_1, x_2)}{\partial t} = - \sum_{i=1}^2 \frac{\partial}{\partial x_i} [\mu_i(t, x_1, x_2)p(t, x_1, x_2)] +
-      \]
-     \[
-      + \frac{1}{2} \sum_{i=1}^2 \sum_{j=1}^2 \frac{\partial^2}{\partial x_i \partial x_j}\left[ \sum_{i=1}^2 b_{ij}(t, x_1, x_2)b_{ji}(t, x_1, x_2)p(t, x_1, x_2)\right]
-    \]
-\end{frame}
-
-\begin{frame}
-    Стохастическое дифференциальное уравнение --- это уравнение вида:
-
-\[dS(t) = \beta(t, S(t)) S(t) dt + \gamma(t, S(t)) S(t) dW(t),\]
-
-%$$t \in [0, T]$$
-%$$t \ge s$$
-%$$S(0) = S_0$$
-
-\end{frame}
-
-\begin{frame}
-В интегральном виде:
-  \[S(T) = S(t) + \int_{0}^{t} \beta(t, S(t)) S(t) dt + \int_{0}^{t} \gamma(t, S(t)) S(t) dW(t)\]
-\end{frame}
-
-\begin{frame}
-  \[dS(t) = aS(t)dt + \sigma S(t)dW(t)\]
-  \uncover<2->{\[S_t = S_0 \exp\left((a - \frac{1}{2}\sigma^2)t + \sigma W_t\right)\]}
-%Где $a(t)$, $b(t)$, $\gamma(t)$ -- детерминированные, то есть не зависящие от случайности функции.
-\end{frame}
-
-\begin{frame}
-
-\end{frame}
 
 \end{document} 
